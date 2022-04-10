@@ -13,7 +13,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        let temporaryDirectory = NSTemporaryDirectory()
+        _ = URLCache(memoryCapacity: 25_000_000, diskCapacity: 50_000_000, directory: URL(string: temporaryDirectory))
+        configureUserNotifications()
         return true
     }
 
@@ -30,7 +32,23 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         // If any sessions were discarded while the application was not running, this will be called shortly after application:didFinishLaunchingWithOptions.
         // Use this method to release any resources that were specific to the discarded scenes, as they will not return.
     }
+    
+    private func configureUserNotifications() {
+      UNUserNotificationCenter.current().delegate = self
+    }
 
 
 }
+
+// MARK: - UNUserNotificationCenterDelegate
+extension AppDelegate: UNUserNotificationCenterDelegate {
+  func userNotificationCenter(
+    _ center: UNUserNotificationCenter,
+    willPresent notification: UNNotification,
+    withCompletionHandler completionHandler: (UNNotificationPresentationOptions) -> Void
+  ) {
+    completionHandler(.banner)
+  }
+}
+
 
